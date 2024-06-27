@@ -12,4 +12,8 @@ public class FuelTank {
     public void consumeFuel(double amount) {
         fuelLevel = Math.max(0, fuelLevel - amount);
     }
+
+    public void rFuel(){
+        fuelLevel = 100;
+    }
 }

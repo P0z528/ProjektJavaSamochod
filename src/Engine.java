@@ -3,7 +3,7 @@ public class Engine {
     private boolean seized;
     private int rpm;
 
-    private int fuel;
+    public int fuel;
 
     private int speed;
     private int oil;

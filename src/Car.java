@@ -97,6 +97,10 @@ public class Car {
         updateDashboard();
     }
 
+    public void refillFuel(){
+        fuelTank.rFuel();
+    }
+
     public void updateDashboard() {
         dashboard.update(this);
     }

@@ -34,6 +34,7 @@ public class CarSimulatorGUI extends JFrame {
 
         car = new Car(new Dashboard());
         carController = new CarController(car, this);
+        FuelTank fuel = new FuelTank();
 
         AccelerateButton.addMouseListener(new MouseAdapter() {
             @Override
@@ -97,6 +98,13 @@ public class CarSimulatorGUI extends JFrame {
         timer.start();
 
         updateDashboard();
+
+        AddFuelButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                carController.Fuelrefill();
+            }
+        });
     }
 
     public void updateDashboard() {
