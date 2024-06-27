@@ -41,4 +41,9 @@ public class CarController {
         car.refillFuel();
         gui.updateDashboard();
     }
+
+    public void Oilrefill(){
+        car.refillOil();
+        gui.updateDashboard();
+    }
 }

@@ -13,4 +13,8 @@ public class OilTank {
         oilLevel = Math.max(0, oilLevel - amount);
     }
 
+    public void rOil(){
+        oilLevel = 100;
+    }
+
 }

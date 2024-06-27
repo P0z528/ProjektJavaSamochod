@@ -105,6 +105,12 @@ public class CarSimulatorGUI extends JFrame {
                 carController.Fuelrefill();
             }
         });
+        AddOilButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                carController.Oilrefill();
+            }
+        });
     }
 
     public void updateDashboard() {

@@ -101,6 +101,10 @@ public class Car {
         fuelTank.rFuel();
     }
 
+    public void refillOil(){
+        oilTank.rOil();
+    }
+
     public void updateDashboard() {
         dashboard.update(this);
     }
