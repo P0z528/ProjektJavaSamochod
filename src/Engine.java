@@ -50,6 +50,12 @@ public class Engine {
         rpm = 0;
     }
 
+    public void Reset(){
+        if(seized == true) {
+            seized = false;
+        }
+    }
+
     public void setRpm(int rpm) {
             this.rpm = rpm;
     }

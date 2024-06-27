@@ -105,6 +105,11 @@ public class Car {
         oilTank.rOil();
     }
 
+    public void resetEngine(){
+        engine.Reset();;
+    }
+
+
     public void updateDashboard() {
         dashboard.update(this);
     }
@@ -201,7 +206,7 @@ public class Car {
     private double getOilConsumptionRate() {
         int rpm = engine.getRpm();
         if (rpm > 4000) {
-            return 0.8 + (rpm - 4000) / 1000.0 * 0.2;
+            return 5 + (rpm - 4000) / 1000.0 * 0.2;
         } else {
             return 0.1;
         }
