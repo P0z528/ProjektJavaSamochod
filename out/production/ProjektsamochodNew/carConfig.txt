@@ -1,0 +1,2 @@
+maksymalne_obroty: 10000
+maksymalna_predkosc: 400

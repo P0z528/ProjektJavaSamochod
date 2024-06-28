@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.FileReader;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -13,6 +16,14 @@ public class Car {
     private Timer speedAdjustmentTimer;
     private Timer decelerationTimer;
 
+    private int liczbaBiegow =5;
+    private int[] predkosciBiegow = new int[liczbaBiegow];
+    private int maksymalnaPredkosc;
+    private int maksymalneObroty;
+    private int currentSpeed;
+    private int currentGear;
+    private boolean engineOn;
+
     public Car(Dashboard dashboard) {
         this.engine = new Engine();
         this.gearbox = new Gearbox();
@@ -23,6 +34,8 @@ public class Car {
         this.timer = new Timer(true);
         this.speedAdjustmentTimer = new Timer(true);
         this.decelerationTimer = new Timer(true);
+        this.currentSpeed = 0;
+        this.currentGear = 0;
         startConsumption();
     }
 
@@ -115,19 +128,22 @@ public class Car {
     }
 
     private int getMaxSpeedForCurrentGear() {
+        calculatePredkosciBiegow();
         switch (gearbox.getCurrentGear()) {
-            case 1:
-                return 40;
-            case 2:
-                return 70;
-            case 3:
-                return 100;
-            case 4:
-                return 150;
-            case 5:
-                return 190;
+                case 1:
+                    return predkosciBiegow[0];
+                case 2:
+                    return predkosciBiegow[1];
+                case 3:
+                    return predkosciBiegow[2];
+                case 4:
+                    return predkosciBiegow[3];
+                case 5:
+                    return predkosciBiegow[4];
+
             default:
                 return 0;
+
         }
     }
 
@@ -154,6 +170,24 @@ public class Car {
             }
         }, 0, 100); // Update every 0.1 seconds
     }
+
+    public void setMaksymalnaPredkosc(int maksymalnaPredkosc) {
+        this.maksymalnaPredkosc = maksymalnaPredkosc;
+        calculatePredkosciBiegow();
+    }
+
+    public void setMaksymalneObroty(int maksymalneObroty) {
+        this.maksymalneObroty = maksymalneObroty;
+    }
+
+    private void calculatePredkosciBiegow() {
+            int step = maksymalnaPredkosc / liczbaBiegow;
+            for (int i = 0; i < liczbaBiegow; i++) {
+                predkosciBiegow[i] = step * (i + 1);
+            }
+
+    }
+
 
     public void startDeceleration() {
         // Cancel any existing deceleration task
@@ -186,14 +220,14 @@ public class Car {
     private int calculateRpmForSpeed(int speed) {
         int maxSpeed = getMaxSpeedForCurrentGear();
         if (gearbox.getCurrentGear() == 0) {
-            return 0 + (6000 * speed / 40);
+            return 0 + ((maksymalneObroty-1000) * speed / 40);
         }
-        return 1000 + (6000 * speed / maxSpeed);
+        return 1000 + ((maksymalneObroty-1000) * speed / maxSpeed);
     }
     private double getFuelConsumptionRate() {
         int rpm = engine.getRpm();
-        if (rpm > 4000) {
-            return 2 + (rpm - 4000) / 1000.0 * 0.2;
+        if (rpm > (maksymalneObroty/2)) {
+            return 1 + (rpm - (maksymalneObroty/2)) / 1000.0 * 0.2;
         }
         else if(rpm == 1000){
             return 0.5;
@@ -205,8 +239,8 @@ public class Car {
 
     private double getOilConsumptionRate() {
         int rpm = engine.getRpm();
-        if (rpm > 4000) {
-            return 5 + (rpm - 4000) / 1000.0 * 0.2;
+        if (rpm > (maksymalneObroty/2)) {
+            return 5 + (rpm - (maksymalneObroty/2)) / 1000.0 * 0.2;
         } else {
             return 0.1;
         }
@@ -240,4 +274,22 @@ public class Car {
             }
         }, 0, 1000); // Update every 1 second
     }
+    public void loadConfigFromFile(String filePath) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(filePath));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] parts = line.split(":");
+            if (parts.length == 2) {
+                String key = parts[0].trim();
+                int value = Integer.parseInt(parts[1].trim());
+                if (key.equals("maksymalne_obroty")) {
+                    setMaksymalneObroty(value);
+                } else if (key.equals("maksymalna_predkosc")) {
+                    setMaksymalnaPredkosc(value);
+                }
+            }
+        }
+        reader.close();
+    }
+
 }

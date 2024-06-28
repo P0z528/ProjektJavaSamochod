@@ -1,0 +1,2 @@
+maksymalne_obroty: 7000
+maksymalna_predkosc: 200

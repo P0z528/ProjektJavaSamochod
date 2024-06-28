@@ -3,6 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import javax.swing.Timer;
 
 public class CarSimulatorGUI extends JFrame {
@@ -87,6 +88,13 @@ public class CarSimulatorGUI extends JFrame {
                 carController.stopEngine();
             }
         });
+
+        try {
+            car.loadConfigFromFile("src\\carConfig.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
 
         timer = new Timer(100, new ActionListener() {
