@@ -16,13 +16,12 @@ public class Car {
     private Timer speedAdjustmentTimer;
     private Timer decelerationTimer;
 
-    private int liczbaBiegow =5;
+    private int liczbaBiegow =5; //musi byc 5, poniewaz switch ma tylko 5 wartosci
     private int[] predkosciBiegow = new int[liczbaBiegow];
     private int maksymalnaPredkosc;
     private int maksymalneObroty;
     private int currentSpeed;
     private int currentGear;
-    private boolean engineOn;
 
     public Car(Dashboard dashboard) {
         this.engine = new Engine();
@@ -99,7 +98,7 @@ public class Car {
     }
 
     public void startEngine(){
-        if (fuelTank.getFuelLevel() > 0 && !engine.isSeized()) {
+        if (fuelTank.getFuelLevel() > 0 && !engine.isSeized() && !engine.isOn()) {
             engine.start();
         }
 
@@ -143,32 +142,30 @@ public class Car {
 
             default:
                 return 0;
-
         }
     }
 
     private void adjustSpeedForGear() {
-        // Cancel any existing speed adjustment task
+
         if (speedAdjustmentTimer != null) {
             speedAdjustmentTimer.cancel();
             speedAdjustmentTimer = new Timer(true);
         }
 
-        // Schedule a new speed adjustment task
         speedAdjustmentTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 int maxSpeed = getMaxSpeedForCurrentGear();
                 if (speed > maxSpeed) {
-                    speed -= 1; // Gradually decrease the speed
+                    speed -= 1;
                     int rpm = calculateRpmForSpeed(speed);
                     engine.setRpm(rpm);
                     updateDashboard();
                 } else {
-                    cancel(); // Stop the timer when the speed is adjusted
+                    cancel();
                 }
             }
-        }, 0, 100); // Update every 0.1 seconds
+        }, 0, 100);
     }
 
     public void setMaksymalnaPredkosc(int maksymalnaPredkosc) {
@@ -185,23 +182,21 @@ public class Car {
             for (int i = 0; i < liczbaBiegow; i++) {
                 predkosciBiegow[i] = step * (i + 1);
             }
-
     }
 
 
     public void startDeceleration() {
-        // Cancel any existing deceleration task
+
         if (decelerationTimer != null) {
             decelerationTimer.cancel();
             decelerationTimer = new Timer(true);
         }
 
-        // Schedule a new deceleration task
         decelerationTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 if (speed > 0) {
-                    speed -= 1; // Gradually decrease the speed
+                    speed -= 1;
                     if (gearbox.getCurrentGear() >= 0 && speed < getMaxSpeedForCurrentGear()) {
                         decreaseGear();
                         rpm = calculateRpmForSpeed(speed);
@@ -211,10 +206,10 @@ public class Car {
                 } else {
                     rpm = 0;
                     updateDashboard();
-                    cancel(); // Stop the timer when the speed reaches 0
+                    cancel();
                 }
             }
-        }, 0, 100); // Update every 0.1 seconds
+        }, 0, 100);
     }
 
     private int calculateRpmForSpeed(int speed) {
@@ -224,6 +219,7 @@ public class Car {
         }
         return 1000 + ((maksymalneObroty-1000) * speed / maxSpeed);
     }
+
     private double getFuelConsumptionRate() {
         int rpm = engine.getRpm();
         if (rpm > (maksymalneObroty/2)) {
@@ -240,11 +236,12 @@ public class Car {
     private double getOilConsumptionRate() {
         int rpm = engine.getRpm();
         if (rpm > (maksymalneObroty/2)) {
-            return 5 + (rpm - (maksymalneObroty/2)) / 1000.0 * 0.2;
+            return 0.5 + (rpm - (maksymalneObroty/2)) / 1000.0 * 0.2;
         } else {
             return 0.1;
         }
     }
+
     private void startConsumption() {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -272,8 +269,9 @@ public class Car {
                     updateDashboard();
                 }
             }
-        }, 0, 1000); // Update every 1 second
+        }, 0, 1000);
     }
+
     public void loadConfigFromFile(String filePath) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(filePath));
         String line;
@@ -291,5 +289,4 @@ public class Car {
         }
         reader.close();
     }
-
 }

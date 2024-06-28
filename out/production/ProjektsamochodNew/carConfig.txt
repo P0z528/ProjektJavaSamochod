@@ -1,2 +1,2 @@
-maksymalne_obroty: 10000
-maksymalna_predkosc: 400
+maksymalne_obroty: 7000
+maksymalna_predkosc: 200

@@ -32,10 +32,10 @@ public class CarSimulatorGUI extends JFrame {
         setSize(1000, 400);
         this.setContentPane(this.panel1);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLocationRelativeTo(null);
 
         car = new Car(new Dashboard());
         carController = new CarController(car, this);
-        FuelTank fuel = new FuelTank();
 
         AccelerateButton.addMouseListener(new MouseAdapter() {
             @Override

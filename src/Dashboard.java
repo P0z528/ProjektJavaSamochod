@@ -9,7 +9,6 @@ public class Dashboard {
     private JProgressBar oilLevelProgressBar;
 
     public Dashboard() {
-        // Initialize labels and progress bars
         gearLabel = new JLabel("Bieg: 0");
         statusLabel = new JLabel("Silnik: Wyłączony");
         speedLabel = new JLabel("Prędkość: 0 km/h");
